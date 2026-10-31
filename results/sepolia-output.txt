@@ -1,0 +1,37 @@
+Network:        Sepolia (chainId 11155111)
+Admin account:   0x245876A9C71D466b6b369E16CD727B8b72e3D0e2
+Balance:         0.05 Sepolia ETH
+
+=== Deployment ===
+MockOracle: 0x38BF00367312e8f762c8417DFb341Bc981b6bd38 https://sepolia.etherscan.io/address/0x38BF00367312e8f762c8417DFb341Bc981b6bd38
+RWAToken:   0xDD71c8cE223eb0Ca56c876e0eb196F0088494340 https://sepolia.etherscan.io/address/0xDD71c8cE223eb0Ca56c876e0eb196F0088494340
+
+=== Scenario ===
+done: Whitelisted: admin account approved  (block 11976876)
+done: Whitelisted: second investor approved  (block 11976877)
+done: Issue 1000 tokens to admin account  (block 11976878)
+done: Transfer 100 tokens to second investor  (block 11976879)
+done: Redeem 50 tokens at oracle price  (block 11976880)
+done: Pause  (block 11976881)
+done: Unpause  (block 11976882)
+
+=== Final balances ===
+Admin account:    850 (expected 850)
+Second investor:  100 (expected 100)
+Total supply:     950 (expected 950)
+
+=== Public transactions (open each link and screenshot) ===
+| Step | Block | Time (UTC) | Transaction |
+| --- | --- | --- | --- |
+| Whitelisted: admin account approved | 11976876 | 2026-10-23T13:09:48.000Z | https://sepolia.etherscan.io/tx/0xee2348ec69a0d047b3f2885afdd36968ac478320f7f7ae78ba6d1562d8975d02 |
+| Whitelisted: second investor approved | 11976877 | 2026-10-23T13:10:00.000Z | https://sepolia.etherscan.io/tx/0xee09408e10d48ce5e78fef4b8c8dc9c0c7ac7b8be4ed4029577e27c5925b9d0f |
+| Issue 1000 tokens to admin account | 11976878 | 2026-10-23T13:10:12.000Z | https://sepolia.etherscan.io/tx/0x37b72d5c0a73ca7e426e921617a002c66f9ec35a2d7304e36c8ff3b2d630bef4 |
+| Transfer 100 tokens to second investor | 11976879 | 2026-10-23T13:10:24.000Z | https://sepolia.etherscan.io/tx/0x44b7e06aea5b126de90e7b225a9e98737b28a940628850ffca4d2f6e0ab2eab6 |
+| Redeem 50 tokens at oracle price | 11976880 | 2026-10-23T13:10:36.000Z | https://sepolia.etherscan.io/tx/0xf10d04a2e9a431007177baa8462e208b7f48ce53c940fff2ab1fc95a51cdf3dd |
+| Pause | 11976881 | 2026-10-23T13:10:48.000Z | https://sepolia.etherscan.io/tx/0xcf7fdafbab4e462027a5796f4d006a53038736c9c91975ac7d37c86e0aa423cb |
+| Unpause | 11976882 | 2026-10-23T13:11:00.000Z | https://sepolia.etherscan.io/tx/0xa2f782e9347bc6cd8cc45c827ed617b76c88612e074ec79fa1650c9231534346 |
+
+Contract links:
+RWAToken   https://sepolia.etherscan.io/address/0xDD71c8cE223eb0Ca56c876e0eb196F0088494340
+MockOracle https://sepolia.etherscan.io/address/0x38BF00367312e8f762c8417DFb341Bc981b6bd38
+Done.

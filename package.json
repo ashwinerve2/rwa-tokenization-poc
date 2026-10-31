@@ -1,0 +1,21 @@
+{
+  "name": "rwa-tokenization-security-poc",
+  "version": "1.0.0",
+  "description": "Proof-of-concept smart contract system for BEng thesis: Security and Trust Challenges in Blockchain-Based RWA Tokenization Systems",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "coverage": "hardhat coverage",
+    "evidence": "hardhat run scripts/evidence.js",
+    "deploy:sepolia": "hardhat run scripts/deploy.js --network sepolia"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "dotenv": "^16.4.5",
+    "hardhat": "^2.29.1"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.0"
+  },
+  "license": "MIT"
+}

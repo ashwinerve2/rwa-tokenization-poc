@@ -1,0 +1,75 @@
+
+
+  RWA tokenization PoC: additional checks
+    MockOracle (price source used in the prototype)
+      ✔ FR-3 MockOracle: the owner can update the price and an event is emitted
+      ✔ FR-3 MockOracle: a non-owner cannot update the price (45ms)
+      ✔ FR-3 MockOracle: refuses a zero or negative price when updating
+      ✔ FR-3 MockOracle: refuses a zero price at deployment
+    Oracle boundary values
+      ✔ FR-3 boundary: a price of exactly 1 is accepted
+      ✔ FR-3 boundary: a price exactly 3600 seconds old is accepted
+      ✔ FR-3 boundary: a price 3601 seconds old is rejected
+    Emergency stop: full recovery
+      ✔ FR-5 after unpausing, issue, burn, transfer and redeem all work again
+      ✔ FR-4 unpause emits the OpenZeppelin Unpaused event naming the actor
+    Administrator power
+      ✔ NFR-2 limitation: the administrator can take back and re-grant any role
+      ✔ NFR-2 an issuer-only account cannot grant roles
+    Reentrancy protection in the source (NFR-1)
+      ✔ NFR-1 source: redeem() is guarded by nonReentrant
+      ✔ NFR-1 source: redeem() checks the price first, then burns, then emits, with no oracle call after the burn
+      ✔ NFR-1 source positive control: in the vulnerable demo the external call comes before the balance update
+
+  RWA tokenization PoC
+    Access control (OWASP SC01)
+      ✔ FR-1 rejects issuance by an account without ISSUER_ROLE
+      ✔ FR-1 lets the issuer mint to a whitelisted address
+      ✔ FR-1 rejects forced burn by an account without ISSUER_ROLE
+      ✔ NFR-2 rejects whitelist changes without COMPLIANCE_ROLE
+      ✔ FR-5 only the admin can pause
+      ✔ NFR-2 role separation: issuer-only account cannot whitelist, pause or change the oracle
+      ✔ NFR-2 role separation: compliance-only account cannot issue, burn or pause
+      ✔ NFR-2 role separation: each single role can do its own job
+      ✔ FR-3 only the admin can change the oracle
+    KYC whitelist and AML controls (domain requirements)
+      ✔ DR-1 rejects issuance to a non-whitelisted address
+      ✔ FR-2 rejects a transfer to a non-whitelisted address
+      ✔ FR-2 allows a transfer between two whitelisted addresses
+      ✔ DR-2 a removed address cannot send
+      ✔ DR-2 a removed address cannot receive or redeem, and its balance stays recorded
+      ✔ DR-2 limitation: a frozen balance cannot be force-burned until the address is re-whitelisted
+      ✔ DR-1 a non-whitelisted address cannot redeem
+    Oracle data quality (OWASP SC03)
+      ✔ FR-3 rejects redemption when the price is older than one hour
+      ✔ FR-3 allows redemption when the price is fresh
+      ✔ FR-3 rejects a zero price
+      ✔ FR-3 rejects a negative price
+      ✔ FR-3 fails closed when the oracle timestamp is in the future
+      ✔ FR-3 rejects an oracle address that is not a contract (SC06)
+    Redemption
+      ✔ FR-3 redeem burns exactly the requested amount
+      ✔ FR-3 redeem rejects above the balance
+    Auditability (events)
+      ✔ FR-4 emits TokensIssued with recipient, amount and actor
+      ✔ FR-4 emits TokensForceBurned with holder, amount and actor
+      ✔ FR-4 emits Whitelisted with account, status and actor
+      ✔ FR-4 emits AssetRedeemed with the price used
+      ✔ FR-4 emits OracleUpdated with the new oracle and the actor
+      ✔ FR-4 pause emits the OpenZeppelin Paused event naming the actor
+    Emergency stop
+      ✔ FR-5 pause blocks issuance
+      ✔ FR-5 pause blocks transfer, burn and redeem; unpause restores service
+    Reentrancy (OWASP SC08)
+      pool before: 5.0 ETH, after: 0.0 ETH, attacker contract holds: 6.0 ETH
+      ✔ NFR-1 BEFORE: the attack drains the deliberately vulnerable contract (41ms)
+      ✔ NFR-1 AFTER: redeem() burns first, makes no external call after it, and completes atomically
+    Source-level guarantees (SC06, SC09)
+      ✔ NFR-3 SC09: RWAToken and MockOracle never use `unchecked`
+      ✔ NFR-3 SC09 positive control: the vulnerable demo does use `unchecked` (so the check can fail)
+      ✔ NFR-4 SC06: RWAToken makes no low-level calls (call, delegatecall, staticcall, send)
+      ✔ NFR-4 SC06 positive control: the vulnerable demo does use a low-level call
+
+
+  52 passing (3s)
+

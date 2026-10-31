@@ -1,0 +1,56 @@
+Compiled 19 Solidity files successfully (evm target: paris).
+
+=== A. Oracle input cases (redeem 10 tokens) ===
+
+| Oracle returns | Expected | What the contract did |
+| --- | --- | --- |
+| Price 100, updated just now | Redemption succeeds | succeeds; AssetRedeemed emitted with price 100 |
+| Price 100, updated 3700 s ago | Rejected | rejected: VM Exception while processing transaction: reverted with reason string 'RWAToken: oracle price stale' |
+| Price 0 | Rejected | rejected: VM Exception while processing transaction: reverted with reason string 'RWAToken: oracle price out of valid range' |
+| Price -5 | Rejected | rejected: VM Exception while processing transaction: reverted with reason string 'RWAToken: oracle price out of valid range' |
+| Price 100, update time one day in the future | Rejected | rejected: VM Exception while processing transaction: reverted with panic code 0x11 (Arithmetic operation overflowed outside of an unchecked block) |
+| Oracle address that is not a contract (setOracle) | Rejected | rejected: VM Exception while processing transaction: reverted with reason string 'RWAToken: oracle must be a contract' |
+| Oracle address that is not a contract (deployment) | Rejected | rejected: VM Exception while processing transaction: reverted with reason string 'RWAToken: oracle must be a contract' |
+
+=== B. Reentrancy before and after ===
+
+|  | VulnerableRWAToken |
+| --- | --- |
+| Attacker deposits | 1.0 ETH |
+| Pool before attack | 5.0 ETH (includes 5 ETH of another user) |
+| Pool after attack | 0.0 ETH |
+| Attacker contract holds | 6.0 ETH |
+
+RWAToken.redeem: balance 1000 -> 500; no external call after the burn, so there is nothing to re-enter.
+
+=== C. Audit trail: events from one scenario ===
+
+| Block | Time (UTC) | Event | Fields |
+| --- | --- | --- | --- |
+| 54 | 2026-10-19T07:21:59.000Z | RoleGranted | role=0x0000000000000000000000000000000000000000000000000000000000000000, account=admin, sender=admin |
+| 54 | 2026-10-19T07:21:59.000Z | RoleGranted | role=0x114e74f6ea3bd819998f78687bfcb11b140da08e9b7d222fa9c1f1ba1f2aa122, account=admin, sender=admin |
+| 54 | 2026-10-19T07:21:59.000Z | RoleGranted | role=0x442a94f1a1fac79af32856af2a64f63648cfa2ef3b98610a5bb7cbec4cee6985, account=admin, sender=admin |
+| 55 | 2026-10-19T07:22:00.000Z | Whitelisted | account=alice, status=true, by=admin |
+| 56 | 2026-10-19T07:22:01.000Z | Whitelisted | account=bob, status=true, by=admin |
+| 57 | 2026-10-19T07:22:02.000Z | Transfer | from=zero-address, to=alice, value=1000 |
+| 57 | 2026-10-19T07:22:02.000Z | TokensIssued | to=alice, amount=1000, by=admin |
+| 58 | 2026-10-19T07:22:03.000Z | Transfer | from=alice, to=bob, value=100 |
+| 59 | 2026-10-19T07:22:04.000Z | Transfer | from=alice, to=zero-address, value=50 |
+| 59 | 2026-10-19T07:22:04.000Z | AssetRedeemed | holder=alice, amount=50, priceAtRedemption=100, timestamp=1792394524 |
+| 60 | 2026-10-19T07:22:05.000Z | Paused | account=admin |
+| 61 | 2026-10-19T07:22:06.000Z | Unpaused | account=admin |
+| 63 | 2026-10-19T07:22:08.000Z | OracleUpdated | newOracle=MockOracle#2, by=admin |
+| 64 | 2026-10-19T07:22:09.000Z | Whitelisted | account=bob, status=false, by=admin |
+| 65 | 2026-10-19T07:22:10.000Z | Whitelisted | account=bob, status=true, by=admin |
+
+=== D. Who may call what (role separation) ===
+
+| Function | admin (all roles) | issuer only | compliance only | investor |
+| --- | --- | --- | --- | --- |
+| issue | allowed | allowed | refused | refused |
+| burnFrom | allowed | allowed | refused | refused |
+| setWhitelist | allowed | refused | allowed | refused |
+| pause | allowed | refused | refused | refused |
+| setOracle | allowed | refused | refused | refused |
+
+Done.
